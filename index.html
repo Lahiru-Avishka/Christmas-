@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Christmas Wish with Animation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+    @font-face {
+      font-family: "Frozen";
+      src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/209981/Ice%20kingdom%20-%20Bold%20-%20Por%20Kustren.woff");
+    }
+
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #000428, #004e92),
+        url("https://assets.codepen.io/209981/ice5.jpg");
+      background-blend-mode: saturation;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Playfair Display', serif;
+      color: white;
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      position: relative;
+    }
+
+    #message {
+      position: absolute;
+      z-index: 2;
+      font-size: 2rem;
+      text-align: center;
+      animation: textGlow 1.5s infinite alternate, fadeIn 5s infinite alternate;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes textGlow {
+      0% { text-shadow: 0 0 5px #FFF, 0 0 10px #FFF, 0 0 20px #FFF, 0 0 30px #FFF, 0 0 40px #FFF, 0 0 50px #FFF; }
+      100% { text-shadow: 0 0 5px #FFF, 0 0 10px #FFF, 0 0 20px #FFF, 0 0 30px #FFF, 0 0 40px #FFF, 0 0 50px #FFF; }
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    h1 {
+      transform: translate(0, -40%);
+      font-size: calc(20vw + 0.5rem);
+      font-family: "Frozen", serif;
+      background-image: url("https://assets.codepen.io/209981/ice.jpg");
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: contain;
+      position: relative;
+      -webkit-text-stroke: 1px #4f90ab;
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7))
+              drop-shadow(0 0 2px rgba(41, 131, 172, 0.7))
+              drop-shadow(0 0 30px rgba(125, 204, 239, 0.8))
+              drop-shadow(0 0 30px rgba(58, 122, 155, 0.8));
+    }
+
+    .animation {
+      position: absolute;
+      left: 0;
+      background: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0) 45%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(255, 255, 255, 0) 55%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 7s infinite;
+      background-size: 200%;
+    }
+
+    @keyframes shine {
+      0% { background-position: -120%; }
+      10% { background-position: 120%; }
+      100% { background-position: 120%; }
+    }
+
+  </style>
+</head>
+<body>
+  <div id="message">
+    <h1>You’re a gift in my life. And not the kind I’d return for store credit. <br>Merry Christmas!</h1>
+  </div>
+  <canvas id="snowCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('snowCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    class Snowflake {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.radius = Math.random() * 3 + 1;
+        this.speed = Math.random() * 2 + 0.5;
+        this.wind = Math.random() * 0.5 - 0.25;
+      }
+
+      update() {
+        this.y += this.speed;
+        this.x += this.wind;
+
+        if (this.y > canvas.height) {
+          this.y = -this.radius;
+          this.x = Math.random() * canvas.width;
+        }
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+
+    const snowflakes = [];
+    for (let i = 0; i < 150; i++) {
+      snowflakes.push(new Snowflake());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      snowflakes.forEach((snowflake) => {
+        snowflake.update();
+        snowflake.draw();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
